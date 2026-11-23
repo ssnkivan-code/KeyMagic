@@ -122,3 +122,7 @@ app/src/main/assets/       words.txt (117k words), emoji.tsv (1,910 emojis)
   github.com/shuding/fluentui-emoji-unicode
 - Emoji names and keywords: Unicode CLDR (Unicode licence)
 - Word list: SCOWL / Hunspell en_US dictionary, plus common-word ranking and Ugandan words
+
+## License
+KeyMagic's own code is released under the [MIT License](LICENSE).
+The third-party data listed under Credits keeps its original license.
