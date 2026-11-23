@@ -291,6 +291,12 @@ class KeyboardRoot(context: Context, core: KeyCore, private val actions: Keyboar
 
     fun refreshRecentEmojis() = emojiPanel.refreshRecents()
 
+    /** Emoji style or font changed in settings. */
+    fun refreshEmojiFont() {
+        emojiPanel.refreshFont()
+        strip.invalidate()
+    }
+
     fun showResize() {
         val p = resizePanel ?: ResizePanel(
             context, heightPercent, actions::onHeightChanged,

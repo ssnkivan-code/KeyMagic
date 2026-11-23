@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- HD (Fluent 3D) emoji pictures are downloaded on first use -->
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- Screenshots in the clipboard history -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />

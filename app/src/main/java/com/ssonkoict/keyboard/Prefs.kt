@@ -23,8 +23,11 @@ class Prefs(context: Context) {
     var emojiPredictions: Boolean get() = bool(EMOJI_PREDICTIONS, true); set(v) = setBool(EMOJI_PREDICTIONS, v)
     var otp: Boolean get() = bool(OTP, true); set(v) = setBool(OTP, v)
     var clipboard: Boolean get() = bool(CLIPBOARD, true); set(v) = setBool(CLIPBOARD, v)
-    /** false = the phone's own emojis (Samsung emojis on a Samsung), true = Microsoft Fluent 3D pictures. */
-    var hdEmoji: Boolean get() = bool(HD_EMOJI, false); set(v) = setBool(HD_EMOJI, v)
+    /** [EMOJI_STYLE_FONT] = the emoji font you picked (default once one is chosen), [EMOJI_STYLE_SYSTEM] = the phone's own emojis. */
+    var emojiStyle: Int get() = int(EMOJI_STYLE, EMOJI_STYLE_FONT); set(v) = setInt(EMOJI_STYLE, v)
+
+    /** Bumped when a new emoji font is imported or removed, so the running keyboard reloads it. */
+    fun notifyEmojiFontChanged() = sp.edit().putLong(EMOJI_FONT_CHANGED, System.currentTimeMillis()).apply()
 
     /** Slowly animated gradient behind the keys. Off = the original solid background. */
     var gradientBackground: Boolean get() = bool(GRADIENT_BG, true); set(v) = setBool(GRADIENT_BG, v)
@@ -74,7 +77,10 @@ class Prefs(context: Context) {
         const val EMOJI_PREDICTIONS = "emoji_predictions"
         const val OTP = "otp"
         const val CLIPBOARD = "clipboard"
-        const val HD_EMOJI = "emoji_fluent"
+        const val EMOJI_STYLE = "emoji_style"
+        const val EMOJI_FONT_CHANGED = "emoji_font_changed"
+        const val EMOJI_STYLE_FONT = 0
+        const val EMOJI_STYLE_SYSTEM = 1
         const val GRADIENT_BG = "gradient_background"
         const val KEY_POPUP = "key_popup"
         const val BOTTOM_SPACE = "bottom_space_dp"

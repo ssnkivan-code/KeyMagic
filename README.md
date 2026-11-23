@@ -10,7 +10,7 @@ A thin Kotlin layer (`app/`) draws the keys and talks to Android.
 | **Clipboard history** | Keeps your last 10 copied items: text, numbers, images and new screenshots, all in one list. An 11th item replaces the oldest. Tap to paste, long-press or ✕ to delete. Images paste straight into apps that accept them; otherwise they go on the clipboard so you can long-press → Paste. |
 | **Resize** | Toolbar ↕ (or Settings): 70–140 % height. |
 | **Number row** | Toolbar **123** button or Settings. |
-| **Emojis** | By default KeyMagic uses your phone's own emojis, so a Samsung shows Samsung's emojis (they can't be bundled, but the phone's font can be used). Optional: Microsoft Fluent 3D pictures (Settings → Emoji style), which download on first use or all at once for offline use. |
+| **Emojis** | Settings → Emoji style: **My emoji font** or **System emojis**. With *My emoji font*, a colour emoji `.ttf` draws every emoji on the keyboard – only that font, no fallback; emojis it lacks are hidden. The font is either built into your own APK (see *Custom emoji font* below) or picked on the phone (Settings → Choose emoji font). Without one, the phone's own emojis are used. No downloads, no internet permission. |
 | **Vibration** | One crisp, hard knock per key press using the phone's tuned haptic click (not a motor buzz). On/off with a strength slider; strong by default. |
 | **Key sounds** | On/off with a volume slider. |
 | **Word prediction** | On by default: completions, typo fixes ("helo" → hello) and next-word predictions learned from your typing. It learns your own words (names, Luganda). Long-press a suggestion to forget it. Double-space types ". ". |
@@ -22,9 +22,21 @@ A thin Kotlin layer (`app/`) draws the keys and talks to Android.
 | **Look** | Samsung-style design that follows the phone's dark/light mode: black, or a light grey key area with white keys. Keys have soft depth (a shadow below, a hairline edge, and a faint sheen in dark mode). Also: rounded keys with more spacing, a shorter number row, outline shift/backspace icons, and an Enter key that shows the app's action (Done, Send, Go…, or a 🔍 icon in search boxes). The toolbar has round buttons (emoji, clipboard, number row, settings, ⋯ = size & layout). |
 | **WhatsApp fix** | See below. |
 
-Apple's iOS emoji artwork is copyrighted, so it can't be bundled. Fluent 3D is the closest
-free HD set (MIT licence). The emojis you send are normal Unicode, so the people you
-message see them in their own phone's (or WhatsApp's) style.
+The emojis you send are normal Unicode, so the people you message see them in their own
+phone's (or WhatsApp's) style – the emoji font only changes how they look on your keyboard.
+
+### Custom emoji font
+No font is included in this repository. To build one into your APK, add its path to
+`local.properties` (git-ignored):
+```properties
+emoji.font=C\:/path/to/YourEmojiFont.ttf
+```
+The build copies it to `assets/emoji_font.ttf`, stored uncompressed so the keyboard
+memory-maps it instead of loading it into RAM. Remove the line to build without it.
+
+The font must be a colour font Android can draw: **CBDT** (bitmap) or **COLR** (vector).
+Apple `sbix` and OpenType-SVG fonts are rejected. Only bundle fonts you are licensed to
+redistribute – don't publish APKs that contain a proprietary font.
 
 ## The WhatsApp "keyboard covers the chat" fix
 Usually a keyboard causes this when it tells Android it's shorter than it really is, or changes
@@ -107,7 +119,7 @@ app/src/main/java/com/ssonkoict/keyboard/
   KeyboardRoot.kt            window layout + suggestion bar / toolbar
   KeyboardView.kt            keys
   Panels.kt                  emoji, clipboard and resize panels
-  Emoji.kt                   emoji list + Fluent 3D image loader
+  Emoji.kt                   emoji list + emoji font (built-in / picked) + EmojiView
   ClipboardStore.kt          clipboard + screenshot watcher, image pasting
   Otp.kt                     notification listener for OTP codes
   Feedback.kt                vibration + sounds
@@ -118,8 +130,6 @@ app/src/main/assets/       words.txt (117k words), emoji.tsv (1,910 emojis)
 ```
 
 ## Credits
-- Emoji pictures: Microsoft Fluent Emoji (MIT), served by code point from
-  github.com/shuding/fluentui-emoji-unicode
 - Emoji names and keywords: Unicode CLDR (Unicode licence)
 - Word list: SCOWL / Hunspell en_US dictionary, plus common-word ranking and Ugandan words
 

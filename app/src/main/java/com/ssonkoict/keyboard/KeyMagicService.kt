@@ -39,7 +39,10 @@ class KeyMagicService : InputMethodService(), KeyboardActions {
     private val prefListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         when (key) {
             Prefs.HEIGHT, Prefs.NUMBER_ROW -> applyLayoutSettings()
-            Prefs.HD_EMOJI -> EmojiImages.enabled = prefs.hdEmoji
+            Prefs.EMOJI_STYLE, Prefs.EMOJI_FONT_CHANGED -> {
+                EmojiFont.reload(this, prefs)
+                root?.refreshEmojiFont()
+            }
             Prefs.GRADIENT_BG -> root?.setGradientBackground(prefs.gradientBackground)
             Prefs.KEY_POPUP -> root?.popupEnabled = prefs.keyPopup
             Prefs.AUTO_NAV_SPACE -> root?.autoNavSpace = prefs.autoNavSpace
@@ -62,7 +65,7 @@ class KeyMagicService : InputMethodService(), KeyboardActions {
         prefs = Prefs(this)
         core = KeyCore()
         feedback = Feedback(this, prefs)
-        EmojiImages.init(this, prefs.hdEmoji)
+        EmojiFont.reload(this, prefs)
         clip = ClipboardStore(this, core) {
             root?.let { if (it.panel == KeyboardRoot.PANEL_CLIPBOARD) it.refreshClipboard() }
         }
@@ -303,7 +306,7 @@ class KeyMagicService : InputMethodService(), KeyboardActions {
         if (dictReady && allowPredictions && currentInputConnection != null) {
             val before = textBefore()
             if (prefs.predictions) words = core.suggest(before, 3)
-            if (prefs.emojiPredictions) emojis = core.suggestEmoji(before, 2)
+            if (prefs.emojiPredictions) emojis = EmojiFont.filter(core.suggestEmoji(before, 4)).take(2)
         }
         r.strip.show(otp, hidden, words, emojis)
     }
@@ -373,7 +376,7 @@ class KeyMagicService : InputMethodService(), KeyboardActions {
         refreshStrip()
     }
 
-    override fun recentEmojis(): List<String> = core.frequentEmojis(48)
+    override fun recentEmojis(): List<String> = EmojiFont.filter(core.frequentEmojis(48))
 
     private fun saveUserData(sync: Boolean = false) {
         learnedSinceSave = 0

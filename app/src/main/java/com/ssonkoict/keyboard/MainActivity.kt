@@ -42,8 +42,8 @@ class MainActivity : Activity() {
     private lateinit var col: LinearLayout
     private lateinit var setupHolder: LinearLayout
     private lateinit var emojiHolder: LinearLayout
-    private var downloading = false
-    private var downloadStatus: TextView? = null
+    private var importing = false
+    private var importStatus: String? = null
 
     private val dp get() = resources.displayMetrics.density
     private fun px(v: Int) = (v * dp).toInt()
@@ -66,7 +66,7 @@ class MainActivity : Activity() {
 
         prefs = Prefs(this)
         feedback = Feedback(this, prefs)
-        EmojiImages.init(this, true)
+        EmojiFont.reload(this, prefs)
 
         col = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -105,6 +105,12 @@ class MainActivity : Activity() {
     override fun onResume() {
         super.onResume()
         buildSetup() // re-check each step when coming back from Android settings
+    }
+
+    @Deprecated("Activity result API needs androidx.activity; plain Activity is fine here.")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_PICK_FONT && resultCode == RESULT_OK) data?.data?.let { importFont(it) }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -288,10 +294,11 @@ class MainActivity : Activity() {
         group("Emoji") {
             choiceRow(
                 "Emoji style",
-                listOf("Phone (Samsung)", "Fluent 3D"),
-                { if (prefs.hdEmoji) 1 else 0 },
+                listOf("My emoji font", "System emojis"),
+                { prefs.emojiStyle },
             ) {
-                prefs.hdEmoji = it == 1
+                prefs.emojiStyle = it
+                EmojiFont.reload(this@MainActivity, prefs)
                 refreshEmojiExtras()
             }
             emojiHolder = LinearLayout(this@MainActivity).apply {
@@ -341,45 +348,105 @@ class MainActivity : Activity() {
         }
     }
 
-    /** Fluent-only extras: download for offline use. */
+    /** Font status + choose / change / remove, under the Emoji style switch. */
     private fun refreshEmojiExtras() {
         if (!::emojiHolder.isInitialized) return
         emojiHolder.removeAllViews()
-        if (!prefs.hdEmoji) {
-            emojiHolder.addView(innerDivider(start = 18))
+        val hasFont = EmojiFont.hasFont(this)
+        val builtIn = EmojiFont.builtInSize(this)
+        emojiHolder.addView(innerDivider(start = 18))
+
+        if (prefs.emojiStyle == Prefs.EMOJI_STYLE_SYSTEM) {
             emojiHolder.addView(column(padH = 18, padTop = 12, padBottom = 14) {
-                addView(text("Uses your phone's own emojis – on a Samsung these are Samsung's emojis. No downloads needed.", 13f, Theme.subText))
+                addView(text("Uses your phone's own emojis.", 13f, Theme.subText))
             })
             return
         }
-        emojiHolder.addView(innerDivider(start = 18))
-        val status = text("", 13f, Theme.subText)
-        downloadStatus = status
-        if (!downloading) status.text = "Saved on phone: ${Formatter.formatShortFileSize(this, EmojiImages.diskBytes())}"
+
+        val status = when {
+            importing -> importStatus ?: "Copying font…"
+            hasFont -> "${EmojiFont.fontName(this) ?: "Emoji font"} · " +
+                Formatter.formatShortFileSize(this, EmojiFont.file(this).length()) +
+                if (EmojiFont.typeface == null) " – couldn't load it, choose it again" else ""
+            builtIn > 0 -> "Using the built-in emoji font (${Formatter.formatShortFileSize(this, builtIn)})" +
+                if (EmojiFont.typeface == null) " – couldn't load it" else ""
+            else -> "No font chosen yet – the phone's own emojis are used until you pick one."
+        }
         emojiHolder.addView(row(padV = 14) {
             addView(column {
-                addView(text("Download all for offline use", 16f, Theme.text))
-                addView(status)
+                addView(text(if (hasFont || builtIn > 0) "Change emoji font" else "Choose emoji font", 16f, Theme.accentLight))
+                addView(text(status, 13f, Theme.subText).apply { setPadding(0, px(2), px(8), 0) })
             }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            addView(text("↓", 20f, Theme.accentLight))
-            setOnClickListener { downloadAll() }
+            setOnClickListener { pickFont() }
+        })
+        if (hasFont && !importing) {
+            emojiHolder.addView(innerDivider(start = 18))
+            emojiHolder.addView(row(padV = 14) {
+                addView(text(if (builtIn > 0) "Back to built-in emoji font" else "Remove emoji font", 16f, Color.parseColor("#E5484D")))
+                setOnClickListener {
+                    EmojiFont.remove(this@MainActivity)
+                    prefs.notifyEmojiFontChanged()
+                    refreshEmojiExtras()
+                }
+            })
+        }
+        emojiHolder.addView(innerDivider(start = 18))
+        emojiHolder.addView(column(padH = 18, padTop = 12, padBottom = 14) {
+            addView(text(
+                (if (builtIn > 0) "Optional: pick another colour emoji .ttf from your phone. " else "Pick a colour emoji .ttf from your phone. ") +
+                    "Only that font draws emojis on the keyboard; " +
+                    "emojis it doesn't have are hidden. Others still see their own app's emojis.",
+                13f, Theme.subText,
+            ))
         })
     }
 
-    private fun downloadAll() {
-        if (downloading) return
-        downloading = true
+    private fun pickFont() {
+        if (importing) return
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*" // fonts come as font/ttf, application/x-font-ttf or octet-stream
+        }
+        try {
+            @Suppress("DEPRECATION")
+            startActivityForResult(intent, REQ_PICK_FONT)
+        } catch (e: Exception) {
+            Toast.makeText(this, "No file picker found on this phone", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun importFont(uri: Uri) {
+        importing = true
+        importStatus = "Copying font…"
+        refreshEmojiExtras()
+        val name = try {
+            contentResolver.query(uri, arrayOf(android.provider.OpenableColumns.DISPLAY_NAME), null, null, null)?.use {
+                if (it.moveToFirst()) it.getString(0) else null
+            }
+        } catch (e: Exception) {
+            null
+        }
         Thread {
-            EmojiData.load(this)
-            val all = EmojiData.all()
-            var failed = 0
-            all.forEachIndexed { i, e ->
-                if (!EmojiImages.isOnDisk(e) && EmojiImages.fetch(e) == null) failed++
-                if (i % 25 == 0 || i == all.size - 1) runOnUiThread { downloadStatus?.text = "Downloading ${i + 1} of ${all.size}…" }
+            val error = EmojiFont.import(this, uri, name) { done, total ->
+                val msg = if (total > 0) "Copying font… ${done * 100 / total}%" else
+                    "Copying font… ${Formatter.formatShortFileSize(this, done)}"
+                runOnUiThread {
+                    importStatus = msg
+                    refreshEmojiExtras()
+                }
             }
             runOnUiThread {
-                downloading = false
-                downloadStatus?.text = "Done – ${all.size - failed} saved" + if (failed > 0) " ($failed use phone emojis, e.g. flags)" else ""
+                importing = false
+                importStatus = null
+                if (error == null) {
+                    prefs.emojiStyle = Prefs.EMOJI_STYLE_FONT
+                    EmojiFont.reload(this, prefs)
+                    prefs.notifyEmojiFontChanged()
+                    Toast.makeText(this, "Emoji font ready", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+                }
+                refreshEmojiExtras()
             }
         }.start()
     }
@@ -587,5 +654,6 @@ class MainActivity : Activity() {
 
     private companion object {
         const val NO_DIVIDER = "no-divider"
+        const val REQ_PICK_FONT = 41
     }
 }

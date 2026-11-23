@@ -70,10 +70,9 @@ class EmojiPanel(
         setBackgroundColor(Theme.background)
 
         EmojiData.groups.forEachIndexed { i, g ->
-            tabs.addView(TextView(context).apply {
-                text = g.icon
-                textSize = 18f
-                gravity = Gravity.CENTER
+            tabs.addView(EmojiView(context).apply {
+                emoji = g.icon
+                setPadding(0, context.dpi(4), 0, context.dpi(4))
                 setOnClickListener { select(i) }
             }, LayoutParams(0, LayoutParams.MATCH_PARENT, 1f))
         }
@@ -106,13 +105,19 @@ class EmojiPanel(
         for (t in 0 until tabs.childCount) {
             tabs.getChildAt(t).background = if (t == i) roundBg(Theme.special, context.dp(8f)) else null
         }
-        adapter.items = if (i == 0) recents() else EmojiData.groups[i].emojis
+        adapter.items = if (i == 0) recents() else EmojiFont.filter(EmojiData.groups[i].emojis)
         adapter.notifyDataSetChanged()
         grid.setSelection(0)
     }
 
     fun refreshRecents() {
         if (current == 0) select(0)
+    }
+
+    /** Redraw with the current emoji font (and hide emojis it doesn't have). */
+    fun refreshFont() {
+        for (t in 0 until tabs.childCount) tabs.getChildAt(t).invalidate()
+        select(current)
     }
 
     private inner class GridAdapter : BaseAdapter() {

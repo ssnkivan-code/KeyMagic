@@ -11,6 +11,15 @@ val keystoreProps = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 
+// Optional built-in emoji font: `emoji.font=<path to .ttf>` in <root>/local.properties
+// (not in git). The font is copied into the APK as assets/emoji_font.ttf.
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+val emojiFontSource: File? = localProps.getProperty("emoji.font")?.trim()?.takeIf { it.isNotEmpty() }?.let { file(it) }
+val emojiFontAssets = layout.buildDirectory.dir("generated/emojiFont/assets")
+
 android {
     namespace = "com.ssonkoict.keyboard"
     compileSdk = 35
@@ -44,6 +53,14 @@ android {
         }
     }
 
+    sourceSets["main"].assets.srcDir(emojiFontAssets)
+
+    androidResources {
+        // Kept uncompressed so the keyboard can memory-map the font instead of
+        // unpacking hundreds of MB into RAM.
+        noCompress += "ttf"
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -71,6 +88,27 @@ val buildRust by tasks.registering(Exec::class) {
     )
 }
 
+// Copies the emoji font from local.properties into the APK (or removes it if unset).
+val prepareEmojiFont by tasks.registering {
+    val src = emojiFontSource
+    val outDir = emojiFontAssets.get().asFile
+    inputs.property("emojiFont", src?.path ?: "")
+    if (src != null && src.isFile) inputs.file(src)
+    outputs.dir(outDir)
+    doLast {
+        val dest = File(outDir, "emoji_font.ttf")
+        outDir.mkdirs()
+        if (src == null) {
+            dest.delete()
+        } else {
+            if (!src.isFile) throw GradleException("emoji.font in local.properties points to a missing file: $src")
+            if (!dest.isFile || dest.length() != src.length() || dest.lastModified() < src.lastModified()) {
+                src.copyTo(dest, overwrite = true)
+            }
+        }
+    }
+}
+
 tasks.named("preBuild") {
-    dependsOn(buildRust)
+    dependsOn(buildRust, prepareEmojiFont)
 }
