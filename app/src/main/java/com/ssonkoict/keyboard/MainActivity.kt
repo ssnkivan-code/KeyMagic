@@ -138,7 +138,7 @@ class MainActivity : Activity() {
             setPadding(px(4), px(20), px(4), px(20))
         }
         val logo = TextView(this).apply {
-            text = "K"
+            text = "V"
             setTextColor(Color.WHITE)
             textSize = 26f
             typeface = Typeface.DEFAULT_BOLD
@@ -152,7 +152,7 @@ class MainActivity : Activity() {
         val texts = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(px(14), 0, 0, 0)
-            addView(text("KeyMagic", 28f, Theme.text, bold = true))
+            addView(text("VanKeyboard", 28f, Theme.text, bold = true))
             addView(text("Your keyboard, your way", 14f, Theme.subText))
         }
         row.addView(texts)
@@ -164,10 +164,10 @@ class MainActivity : Activity() {
     private fun buildSetup() {
         setupHolder.removeAllViews()
         val steps = listOf(
-            Step("Turn on KeyMagic", "Enable it in Android's keyboard list", isKeyboardEnabled()) {
+            Step("Turn on VanKeyboard", "Enable it in Android's keyboard list", isKeyboardEnabled()) {
                 startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
             },
-            Step("Choose KeyMagic", "Make it the keyboard you type with", isKeyboardSelected()) {
+            Step("Choose VanKeyboard", "Make it the keyboard you type with", isKeyboardSelected()) {
                 (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
             },
             Step("Allow photos", "So new screenshots appear in your clipboard", hasPhotoPermission()) {
@@ -190,7 +190,7 @@ class MainActivity : Activity() {
                 addView(badge("✓", Theme.accent), LinearLayout.LayoutParams(px(36), px(36)))
                 addView(column(start = 14) {
                     addView(text("You're all set", 17f, Theme.text, bold = true))
-                    addView(text("KeyMagic is ready. Adjust anything below.", 13f, Theme.subText))
+                    addView(text("VanKeyboard is ready. Adjust anything below.", 13f, Theme.subText))
                 }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
             })
         } else {
@@ -236,7 +236,7 @@ class MainActivity : Activity() {
             addView(text(
                 "Android hides codes in notifications from apps you install yourself. Run this once from a PC " +
                     "(USB debugging on), then restart the phone. Until then, tap “Copy code” on the SMS – " +
-                    "KeyMagic shows copied codes too.",
+                    "VanKeyboard shows copied codes too.",
                 13f, Theme.subText,
             ).apply { setPadding(0, px(4), 0, px(10)) })
             addView(TextView(this@MainActivity).apply {
@@ -452,7 +452,7 @@ class MainActivity : Activity() {
     }
 
     private fun footer() {
-        col.addView(text("KeyMagic ${versionName()}", 12f, Theme.subText).apply {
+        col.addView(text("VanKeyboard ${versionName()}", 12f, Theme.subText).apply {
             gravity = Gravity.CENTER
             setPadding(0, px(24), 0, 0)
         }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))

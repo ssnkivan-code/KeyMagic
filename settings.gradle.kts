@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KeyMagic"
+rootProject.name = "VanKeyboard"
 include(":app")

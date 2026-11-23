@@ -1,4 +1,6 @@
-# KeyMagic (v0.13)
+# VanKeyboard (v0.14)
+
+*Formerly KeyMagic.*
 
 An Android keyboard. All the keyboard logic is written in Rust (`keycore/`): layouts,
 shift/caps, word and emoji prediction, the clipboard history and OTP detection.
@@ -40,7 +42,7 @@ redistribute – don't publish APKs that contain a proprietary font.
 
 ## The WhatsApp "keyboard covers the chat" fix
 Usually a keyboard causes this when it tells Android it's shorter than it really is, or changes
-height while you type. WhatsApp then lays out the chat for the wrong size. KeyMagic:
+height while you type. WhatsApp then lays out the chat for the wrong size. VanKeyboard:
 - never uses full-screen "extract" mode (`onEvaluateFullscreenMode = false`)
 - reports its exact top edge, and keeps touches inside the keyboard (`onComputeInsets`)
 - keeps the suggestion bar inside the keyboard window instead of using a separate
@@ -68,11 +70,11 @@ button) so the fix can target it.
    ```
 3. Set `ANDROID_NDK_HOME` to the NDK folder
    (Windows example: `C:\Users\<you>\AppData\Local\Android\Sdk\ndk\<version>`).
-4. Open the `KeyMagic` folder in Android Studio and press **Run**. Gradle builds the Rust
+4. Open the project folder in Android Studio and press **Run**. Gradle builds the Rust
    part automatically (task `buildRust`).
 
 ### On the phone
-Open the **KeyMagic** app. The *Get started* card shows your progress and ticks off each step:
+Open the **VanKeyboard** app. The *Get started* card shows your progress and ticks off each step:
 1. Turn on the keyboard → 2. Switch to it → 3. Allow photos (for screenshots) →
 4. Allow notification access (for OTPs).
 
@@ -92,7 +94,7 @@ may not work on every brand of phone. Without it, tap **Copy code** on the SMS
 notification: the keyboard picks the copied code up and shows the 🔑 chip.
 
 ## Good to know
-- Android lets only the **active** keyboard read the clipboard, so copies are saved while KeyMagic
+- Android lets only the **active** keyboard read the clipboard, so copies are saved while VanKeyboard
   is your selected keyboard.
 - Items that apps mark as sensitive (for example passwords from password managers) are never saved.
 - Screenshots: new ones are added automatically. The first time, the last 3 from the past 3 days are
@@ -136,5 +138,5 @@ app/src/main/assets/       words.txt (117k words), emoji.tsv (1,910 emojis)
 - Word list: SCOWL / Hunspell en_US dictionary, plus common-word ranking and Ugandan words
 
 ## License
-KeyMagic's own code is released under the [MIT License](LICENSE).
+VanKeyboard's own code is released under the [MIT License](LICENSE).
 The third-party data listed under Credits keeps its original license.

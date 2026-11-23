@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">KeyMagic</string>
+    <string name="app_name">VanKeyboard</string>
     <string name="subtype_en_us">English (US)</string>
-    <string name="otp_listener_label">KeyMagic – OTP codes</string>
+    <string name="otp_listener_label">VanKeyboard – OTP codes</string>
 </resources>

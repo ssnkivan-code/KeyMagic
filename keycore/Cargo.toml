@@ -2,7 +2,7 @@
 name = "keycore"
 version = "0.1.0"
 edition = "2021"
-description = "Keyboard logic for KeyMagic (layouts, shift/caps, pages), exposed to Android via JNI"
+description = "Keyboard logic for VanKeyboard (layouts, shift/caps, pages), exposed to Android via JNI"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

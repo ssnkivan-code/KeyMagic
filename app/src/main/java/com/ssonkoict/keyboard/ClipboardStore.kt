@@ -26,7 +26,7 @@ import java.util.concurrent.Executors
  * in one list (the Rust core decides order and what gets dropped).
  *
  * Android only lets the *active* keyboard read the clipboard in the background,
- * so this works while KeyMagic is your selected keyboard.
+ * so this works while VanKeyboard is your selected keyboard.
  */
 class ClipboardStore(
     private val context: Context,
