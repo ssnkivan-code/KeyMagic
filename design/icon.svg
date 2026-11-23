@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- VanKeyboard app icon (master). A glossy 3D keycap with a "V" on a blue→violet tile.
+       Android launcher versions: app/src/main/res/drawable/ic_launcher_{background,foreground}.xml -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5B8CFF"/>
+      <stop offset="0.55" stop-color="#6F6CF8"/>
+      <stop offset="1" stop-color="#8A5CF6"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="140" cy="100" r="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E3E8FF"/>
+      <stop offset="1" stop-color="#9AA4E6"/>
+    </linearGradient>
+    <linearGradient id="face" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E4E9FF"/>
+    </linearGradient>
+    <linearGradient id="dish" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E9EDFF"/>
+      <stop offset="1" stop-color="#FFFFFF"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="letter" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4F7CF7"/>
+      <stop offset="1" stop-color="#8A5CF6"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-80%" width="160%" height="260%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="tiny" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="2.5"/>
+    </filter>
+  </defs>
+
+  <!-- tile -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="112" fill="url(#glow)"/>
+
+  <!-- cast shadow -->
+  <ellipse cx="256" cy="412" rx="150" ry="28" fill="#1B1450" opacity="0.45" filter="url(#soft)"/>
+
+  <!-- keycap body (sides) -->
+  <path fill="url(#body)" d="M176,140 h160 a60,60 0 0 1 60,60 v142 a60,60 0 0 1 -60,60 h-160 a60,60 0 0 1 -60,-60 v-142 a60,60 0 0 1 60,-60z"/>
+  <!-- top face -->
+  <path fill="url(#face)" d="M184,122 h144 a48,48 0 0 1 48,48 v130 a48,48 0 0 1 -48,48 h-144 a48,48 0 0 1 -48,-48 v-130 a48,48 0 0 1 48,-48z"/>
+  <!-- slightly concave dish -->
+  <path fill="url(#dish)" d="M192,138 h128 a40,40 0 0 1 40,40 v114 a40,40 0 0 1 -40,40 h-128 a40,40 0 0 1 -40,-40 v-114 a40,40 0 0 1 40,-40z"/>
+  <!-- gloss -->
+  <path fill="url(#gloss)" d="M184,126 h144 a44,44 0 0 1 44,44 v40 h-232 v-40 a44,44 0 0 1 44,-44z"/>
+
+  <!-- V -->
+  <path fill="#1A2A6E" opacity="0.2" filter="url(#tiny)" d="M196,181 L232,181 L256,258 L280,181 L316,181 L274,306 L238,306 Z"/>
+  <path fill="url(#letter)" d="M196,175 L232,175 L256,252 L280,175 L316,175 L274,300 L238,300 Z"/>
+</svg>

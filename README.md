@@ -1,4 +1,6 @@
-# VanKeyboard (v0.14)
+<p align="center"><img src="fastlane/metadata/android/en-US/images/icon.png" width="128" alt="VanKeyboard icon"></p>
+
+# VanKeyboard (v0.15)
 
 *Formerly KeyMagic.*
 

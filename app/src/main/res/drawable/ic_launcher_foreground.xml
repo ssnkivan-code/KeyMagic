@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Adaptive icon foreground: 3D keycap with a "V" (see design/icon.svg).
+     Scaled to sit inside the 66dp safe zone so no launcher mask clips it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <group
+        android:pivotX="256" android:pivotY="256"
+        android:scaleX="0.76" android:scaleY="0.76"
+        android:translateY="-19">
+
+        <!-- cast shadow (squashed radial gradient; vectors can't blur) -->
+        <group android:pivotX="256" android:pivotY="412" android:scaleY="0.22">
+            <path android:pathData="M256,412m-170,0a170,170 0 1,0 340,0a170,170 0 1,0 -340,0">
+                <aapt:attr name="android:fillColor">
+                    <gradient
+                        android:type="radial"
+                        android:centerX="256" android:centerY="412"
+                        android:gradientRadius="170">
+                        <item android:offset="0" android:color="#801B1450" />
+                        <item android:offset="0.6" android:color="#401B1450" />
+                        <item android:offset="1" android:color="#001B1450" />
+                    </gradient>
+                </aapt:attr>
+            </path>
+        </group>
+
+        <!-- keycap body (sides) -->
+        <path android:pathData="M176,140 h160 a60,60 0 0 1 60,60 v142 a60,60 0 0 1 -60,60 h-160 a60,60 0 0 1 -60,-60 v-142 a60,60 0 0 1 60,-60z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:type="linear"
+                    android:startX="0" android:startY="140" android:endX="0" android:endY="402">
+                    <item android:offset="0" android:color="#FFE3E8FF" />
+                    <item android:offset="1" android:color="#FF9AA4E6" />
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- top face -->
+        <path android:pathData="M184,122 h144 a48,48 0 0 1 48,48 v130 a48,48 0 0 1 -48,48 h-144 a48,48 0 0 1 -48,-48 v-130 a48,48 0 0 1 48,-48z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:type="linear"
+                    android:startX="0" android:startY="122" android:endX="0" android:endY="348">
+                    <item android:offset="0" android:color="#FFFFFFFF" />
+                    <item android:offset="1" android:color="#FFE4E9FF" />
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- concave dish -->
+        <path android:pathData="M192,138 h128 a40,40 0 0 1 40,40 v114 a40,40 0 0 1 -40,40 h-128 a40,40 0 0 1 -40,-40 v-114 a40,40 0 0 1 40,-40z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:type="linear"
+                    android:startX="0" android:startY="138" android:endX="0" android:endY="332">
+                    <item android:offset="0" android:color="#FFE9EDFF" />
+                    <item android:offset="1" android:color="#FFFFFFFF" />
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- gloss -->
+        <path android:pathData="M184,126 h144 a44,44 0 0 1 44,44 v40 h-232 v-40 a44,44 0 0 1 44,-44z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:type="linear"
+                    android:startX="0" android:startY="126" android:endX="0" android:endY="210">
+                    <item android:offset="0" android:color="#BFFFFFFF" />
+                    <item android:offset="1" android:color="#00FFFFFF" />
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- V: soft drop shadow, then the letter -->
+        <path
+            android:fillColor="#331A2A6E"
+            android:pathData="M196,181 L232,181 L256,258 L280,181 L316,181 L274,306 L238,306 Z" />
+        <path android:pathData="M196,175 L232,175 L256,252 L280,175 L316,175 L274,300 L238,300 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:type="linear"
+                    android:startX="0" android:startY="175" android:endX="0" android:endY="300">
+                    <item android:offset="0" android:color="#FF4F7CF7" />
+                    <item android:offset="1" android:color="#FF8A5CF6" />
+                </gradient>
+            </aapt:attr>
+        </path>
+    </group>
+</vector>
