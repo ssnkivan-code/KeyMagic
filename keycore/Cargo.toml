@@ -1,0 +1,19 @@
+[package]
+name = "keycore"
+version = "0.1.0"
+edition = "2021"
+description = "Keyboard logic for KeyMagic (layouts, shift/caps, pages), exposed to Android via JNI"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+# No external crates: the JNI surface only uses primitive types (jlong/jint/jboolean),
+# so we don't need the `jni` crate at all.
+[dependencies]
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"

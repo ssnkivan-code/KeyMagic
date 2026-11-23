@@ -1,0 +1,12 @@
+.gradle/
+.kotlin/
+build/
+local.properties
+.idea/
+*.iml
+keycore/target/
+app/src/main/jniLibs/
+# release signing secrets
+keystore.properties
+keystore/
+*.jks
