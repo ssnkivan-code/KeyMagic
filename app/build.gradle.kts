@@ -11,13 +11,15 @@ val keystoreProps = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 
-// Optional built-in emoji font: `emoji.font=<path to .ttf>` in <root>/local.properties
-// (not in git). The font is copied into the APK as assets/emoji_font.ttf.
+// Built-in emoji font, copied into the APK as assets/emoji_font.ttf.
+// Default: fonts/NotoColorEmoji.ttf (Google Noto Color Emoji, SIL OFL 1.1).
+// Override per machine with `emoji.font=<path to .ttf>` in <root>/local.properties (not in git).
 val localProps = Properties().apply {
     val f = rootProject.file("local.properties")
     if (f.exists()) f.inputStream().use { load(it) }
 }
 val emojiFontSource: File? = localProps.getProperty("emoji.font")?.trim()?.takeIf { it.isNotEmpty() }?.let { file(it) }
+    ?: rootProject.file("fonts/NotoColorEmoji.ttf").takeIf { it.isFile }
 val emojiFontAssets = layout.buildDirectory.dir("generated/emojiFont/assets")
 
 android {
@@ -28,8 +30,8 @@ android {
         applicationId = "com.ssonkoict.keyboard"
         minSdk = 24
         targetSdk = 35
-        versionCode = 12
-        versionName = "0.12.0"
+        versionCode = 13
+        versionName = "0.13.0"
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
         }

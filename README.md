@@ -1,4 +1,4 @@
-# KeyMagic (v0.12)
+# KeyMagic (v0.13)
 
 An Android keyboard. All the keyboard logic is written in Rust (`keycore/`): layouts,
 shift/caps, word and emoji prediction, the clipboard history and OTP detection.
@@ -10,7 +10,7 @@ A thin Kotlin layer (`app/`) draws the keys and talks to Android.
 | **Clipboard history** | Keeps your last 10 copied items: text, numbers, images and new screenshots, all in one list. An 11th item replaces the oldest. Tap to paste, long-press or ✕ to delete. Images paste straight into apps that accept them; otherwise they go on the clipboard so you can long-press → Paste. |
 | **Resize** | Toolbar ↕ (or Settings): 70–140 % height. |
 | **Number row** | Toolbar **123** button or Settings. |
-| **Emojis** | Settings → Emoji style: **My emoji font** or **System emojis**. With *My emoji font*, a colour emoji `.ttf` draws every emoji on the keyboard – only that font, no fallback; emojis it lacks are hidden. The font is either built into your own APK (see *Custom emoji font* below) or picked on the phone (Settings → Choose emoji font). Without one, the phone's own emojis are used. No downloads, no internet permission. |
+| **Emojis** | Google's **Noto Color Emoji** (the Android emoji set, Emoji 17.0) is built in and used by default, so emojis look the same on every phone. Settings → Emoji style: **My emoji font** or **System emojis**. You can also pick another colour emoji `.ttf` on the phone (Settings → Change emoji font). Only the chosen font draws emojis – no fallback; emojis it lacks are hidden. No downloads, no internet permission. |
 | **Vibration** | One crisp, hard knock per key press using the phone's tuned haptic click (not a motor buzz). On/off with a strength slider; strong by default. |
 | **Key sounds** | On/off with a volume slider. |
 | **Word prediction** | On by default: completions, typo fixes ("helo" → hello) and next-word predictions learned from your typing. It learns your own words (names, Luganda). Long-press a suggestion to forget it. Double-space types ". ". |
@@ -25,14 +25,14 @@ A thin Kotlin layer (`app/`) draws the keys and talks to Android.
 The emojis you send are normal Unicode, so the people you message see them in their own
 phone's (or WhatsApp's) style – the emoji font only changes how they look on your keyboard.
 
-### Custom emoji font
-No font is included in this repository. To build one into your APK, add its path to
-`local.properties` (git-ignored):
+### Built-in emoji font
+`fonts/NotoColorEmoji.ttf` (Noto Color Emoji v2.051, SIL OFL 1.1 – see `fonts/OFL.txt`)
+is copied into the APK as `assets/emoji_font.ttf`, stored uncompressed so the keyboard
+memory-maps it instead of loading it into RAM. To build a different font into your own
+APK, set its path in `local.properties` (git-ignored):
 ```properties
 emoji.font=C\:/path/to/YourEmojiFont.ttf
 ```
-The build copies it to `assets/emoji_font.ttf`, stored uncompressed so the keyboard
-memory-maps it instead of loading it into RAM. Remove the line to build without it.
 
 The font must be a colour font Android can draw: **CBDT** (bitmap) or **COLR** (vector).
 Apple `sbix` and OpenType-SVG fonts are rejected. Only bundle fonts you are licensed to
@@ -130,6 +130,8 @@ app/src/main/assets/       words.txt (117k words), emoji.tsv (1,910 emojis)
 ```
 
 ## Credits
+- Emoji font: Google Noto Color Emoji v2.051 (SIL Open Font License 1.1, `fonts/OFL.txt`),
+  github.com/googlefonts/noto-emoji
 - Emoji names and keywords: Unicode CLDR (Unicode licence)
 - Word list: SCOWL / Hunspell en_US dictionary, plus common-word ranking and Ugandan words
 
